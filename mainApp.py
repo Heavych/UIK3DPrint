@@ -37,10 +37,6 @@ class MainApp(QMainWindow, Ui_MainWindow):
         meshy = maxy - miny
         meshz = maxz - minz
         mesh_dimension = [meshx, meshy, meshz]
-        # print("X:", meshx)
-        # print("Y:", meshy)
-        # print("Z:", int(meshz))
-        # print(meshdimension)
         self.spinBox_ModelSizeX.setProperty("value", int(meshx))
         self.spinBox_ModelSizeY.setProperty("value", int(meshy))
         self.spinBox_ModelSizeZ.setProperty("value", int(meshz))
@@ -297,7 +293,8 @@ class MainApp(QMainWindow, Ui_MainWindow):
     def search_printers_all(self, work_space_x, work_space_y, work_space_z, heads_print, in_lh):
         try:
             curs = conn.cursor()
-            searchQuery = """SELECT * FROM Printers WHERE WorkspaceX>? AND WorkspaceY>? AND WorkspaceZ>? AND HeadsPrint=? AND LayerHeight<=? ORDER BY Price ASC """
+            searchQuery = """SELECT * FROM Printers WHERE WorkspaceX>? AND WorkspaceY>? AND WorkspaceZ>? AND HeadsPrint=? 
+            AND LayerHeight<=? ORDER BY Price ASC """
             curs.execute(searchQuery, (work_space_x, work_space_y, work_space_z, heads_print, in_lh))
             row = curs.fetchall()
             conn.commit()
@@ -323,91 +320,6 @@ class MainApp(QMainWindow, Ui_MainWindow):
 
         except Exception:
             self.notSearch()
-
-    def search_printers_home(self, work_space_x, work_space_y, work_space_z, heads_print, in_lh, in_tech, min_cost):
-
-        try:
-            curs = conn.cursor()
-            searchQuery = """SELECT * FROM Printers WHERE WorkspaceX>? AND WorkspaceY>? AND WorkspaceZ>? AND HeadsPrint=? AND LayerHeight<=? AND TechnologyID=? AND Price<=? ORDER BY Price ASC """
-            curs.execute(searchQuery, (work_space_x, work_space_y, work_space_z, heads_print, in_lh, in_tech, min_cost))
-            row = curs.fetchall()
-            conn.commit()
-
-            var_iter = 0
-            curs_2 = conn.cursor()
-            search_query_2 = """SELECT * FROM Manufacturers Where ManufacturerID=?"""
-            curs_2.execute(search_query_2, (row[var_iter][5],))
-            row_2 = curs_2.fetchall()
-            conn.commit()
-
-            curs_3 = conn.cursor()
-            search_query_3 = """SELECT * FROM Technology Where TechnologyID=?"""
-            curs_3.execute(search_query_3, (row[var_iter][2],))
-            row_3 = curs_3.fetchall()
-            conn.commit()
-
-            self.display_result_info(row, row_2, row_3)
-            self.set_material(row)
-
-        except Exception:
-            self.notSearch()
-
-    def search_printers_pro(self, work_space_x, work_space_y, work_space_z, heads_print, in_lh, min_cost):
-
-        try:
-            curs = conn.cursor()
-            search_query = """SELECT * FROM Printers WHERE WorkspaceX>? AND WorkspaceY>? AND WorkspaceZ>? AND HeadsPrint=? AND LayerHeight<=? AND Price>=? ORDER BY Price ASC """
-            curs.execute(search_query, (work_space_x, work_space_y, work_space_z, heads_print, in_lh, min_cost))
-            row = curs.fetchall()
-            conn.commit()
-
-            var_iter = 0
-            curs_2 = conn.cursor()
-            search_query_2 = """SELECT * FROM Manufacturers Where ManufacturerID=?"""
-            curs_2.execute(search_query_2, (row[var_iter][5],))
-            row_2 = curs_2.fetchall()
-            conn.commit()
-
-            curs_3 = conn.cursor()
-            search_query_3 = """SELECT * FROM Technology Where TechnologyID=?"""
-            curs_3.execute(search_query_3, (row[var_iter][2],))
-            row_3 = curs_3.fetchall()
-            conn.commit()
-
-            self.display_result_info(row, row_2, row_3)
-            self.set_material(row)
-
-        except Exception:
-            self.notSearch()
-
-    def search_printers_jewelry(self, work_space_x, work_space_y, work_space_z, heads_print, in_lh, in_tech):
-
-        try:
-            curs = conn.cursor()
-            search_query = """SELECT * FROM Printers WHERE WorkspaceX>? AND WorkspaceY>? AND WorkspaceZ>? AND HeadsPrint=? AND LayerHeight<=? AND TechnologyID=? ORDER BY Price ASC """
-            curs.execute(search_query, (work_space_x, work_space_y, work_space_z, heads_print, in_lh, in_tech))
-            row = curs.fetchall()
-            conn.commit()
-
-            var_iter = 0
-            curs_2 = conn.cursor()
-            search_query_2 = """SELECT * FROM Manufacturers Where ManufacturerID=?"""
-            curs_2.execute(search_query_2, (row[var_iter][5],))
-            row_2 = curs_2.fetchall()
-            conn.commit()
-
-            curs_3 = conn.cursor()
-            search_query_3 = """SELECT * FROM Technology Where TechnologyID=?"""
-            curs_3.execute(search_query_3, (row[var_iter][2],))
-            row_3 = curs_3.fetchall()
-            conn.commit()
-
-            self.display_result_info(row, row_2, row_3)
-            self.set_material(row)
-
-        except Exception:
-            self.not_found()
-
 
     def display_result_info(self, res_row, res_row_2, res_row_3):
         #print(res_row)
